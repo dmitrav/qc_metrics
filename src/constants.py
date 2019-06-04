@@ -1,5 +1,5 @@
 
-version = '0.0.1'
+version = '0.0.2'
 
 feature_matrix_file_path = '/Users/andreidm/ETH/projects/ms_feature_extractor/res/test1/feature_matrix.json'
 
@@ -37,9 +37,8 @@ isotopic_accuracy_features_names = ['intensity_ratios_diffs_Caffeine_i1_mean', '
 
 transmission_features_names = ['intensity_Perfluorotetradecanoic_acid_i1_mean', 'intensity_Fluconazole_i1_mean']
 
-fragmentation_features_names = []
-'Fluconazole_i1', 'Fluconazole_f1'
-'Perfluorotetradecanoic_acid_i1', 'Perfluorotetradecanoic acid_f1'
+fragmentation_features_names = ['fragments_ratios_Fluconazole_i1_0_mean',
+                                'fragments_ratios_Perfluorotetradecanoic_acid_i1_0_mean']
 
 baseline_features_names = []
 signal_features_names = []
