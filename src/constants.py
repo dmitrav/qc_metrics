@@ -1,5 +1,5 @@
 
-version = '0.0.2'
+version = '0.0.3'
 
 feature_matrix_file_path = '/Users/andreidm/ETH/projects/ms_feature_extractor/res/test1/feature_matrix.json'
 
@@ -18,22 +18,23 @@ accuracy_features_names = ['absolute_mass_accuracy_Caffeine_i1_mean', 'absolute_
                            'absolute_mass_accuracy_Perfluorotetradecanoic_acid_i1_mean', 'absolute_mass_accuracy_Perfluorotetradecanoic_acid_i2_mean', 'absolute_mass_accuracy_Perfluorotetradecanoic_acid_i3_mean', 'absolute_mass_accuracy_Perfluorotetradecanoic acid_f1_mean', 'absolute_mass_accuracy_Perfluorotetradecanoic acid_f2_mean',
                            'absolute_mass_accuracy_Pentadecafluoroheptyl_i1_mean', 'absolute_mass_accuracy_Pentadecafluoroheptyl_i2_mean', 'absolute_mass_accuracy_Pentadecafluoroheptyl_i3_mean']
 
-dirt_features_names = ['intensity_HOT_i1', 'intensity_HOT_i2', 'intensity_HOT_i3',
-                       'intensity_HEX_i1', 'intensity_HEX_i2', 'intensity_HEX_i3']
+dirt_features_names = ['intensity_sum_chem_50_150', 'intensity_sum_chem_150_250', 'intensity_sum_chem_250_350', 'intensity_sum_chem_350_450', 'intensity_sum_chem_450_550',
+                       'intensity_sum_chem_550_650','intensity_sum_chem_650_750', 'intensity_sum_chem_750_850', 'intensity_sum_chem_850_950', 'intensity_sum_chem_950_1050']
+
 
 instrument_noise_tic_features_names = ['intensity_sum_bg_50_250', 'intensity_sum_bg_250_450', 'intensity_sum_bg_450_650', 'intensity_sum_bg_650_850', 'intensity_sum_bg_850_1050']
 
 instrument_noise_percentiles_features_names = ['percentiles_bg_50_250_1', 'percentiles_bg_250_450_1', 'percentiles_bg_450_650_1', 'percentiles_bg_650_850_1', 'percentiles_bg_850_1050_1']
 
-isotopic_accuracy_features_names = ['intensity_ratios_diffs_Caffeine_i1_mean', 'intensity_ratios_diffs_Caffeine_i2_mean', 'intensity_ratios_diffs_Caffeine_i3_mean',
-                                    'intensity_ratios_diffs_Fluconazole_i1_mean', 'intensity_ratios_diffs_Fluconazole_i2_mean', 'intensity_ratios_diffs_Fluconazole_i3_mean',
-                                    'intensity_ratios_diffs_3-(Heptadecafluorooctyl)aniline_i1_mean', 'intensity_ratios_diffs_3-(Heptadecafluorooctyl)aniline_i2_mean', 'intensity_ratios_diffs_3-(Heptadecafluorooctyl)aniline_i3',
-                                    'intensity_ratios_diffs_Albendazole_i1_mean', 'intensity_ratios_diffs_Albendazole_i2_mean', 'intensity_ratios_diffs_Albendazole_i3_mean',
-                                    'intensity_ratios_diffs_Triamcinolone_acetonide_i1_mean', 'intensity_ratios_diffs_Triamcinolone_acetonide_i2_mean', 'intensity_ratios_diffs_Triamcinolone_acetonide_i3_mean',
-                                    'intensity_ratios_diffs_Perfluorodecanoic_acid_i1_mean', 'intensity_ratios_diffs_Perfluorodecanoic_acid_i2_mean', 'intensity_ratios_diffs_Perfluorodecanoic_acid_i3_mean',
-                                    'intensity_ratios_diffs_Tricosafluorododecanoic_acid_i1_mean', 'intensity_ratios_diffs_Tricosafluorododecanoic_acid_i2_mean', 'intensity_ratios_diffs_Tricosafluorododecanoic_acid_i3_mean',
-                                    'intensity_ratios_diffs_Perfluorotetradecanoic_acid_i1_mean', 'intensity_ratios_diffs_Perfluorotetradecanoic_acid_i2_mean', 'intensity_ratios_diffs_Perfluorotetradecanoic_acid_i3_mean',
-                                    'intensity_ratios_diffs_Pentadecafluoroheptyl_i1_mean', 'intensity_ratios_diffs_Pentadecafluoroheptyl_i2_mean', 'intensity_ratios_diffs_Pentadecafluoroheptyl_i3_mean']
+isotopic_presence_features_names = ['intensity_ratios_diffs_Caffeine_i1_0_mean', 'intensity_ratios_diffs_Caffeine_i1_1_mean', 'intensity_ratios_diffs_Caffeine_i1_2_mean',
+                                    'intensity_ratios_diffs_Fluconazole_i1_0_mean', 'intensity_ratios_diffs_Fluconazole_i1_1_mean', 'intensity_ratios_diffs_Fluconazole_i1_2_mean',
+                                    'intensity_ratios_diffs_3-(Heptadecafluorooctyl)aniline_i1_0_mean', 'intensity_ratios_diffs_3-(Heptadecafluorooctyl)aniline_i1_1_mean', 'intensity_ratios_diffs_3-(Heptadecafluorooctyl)aniline_i1_2_mean',
+                                    'intensity_ratios_diffs_Albendazole_i1_0_mean', 'intensity_ratios_diffs_Albendazole_i1_1_mean', 'intensity_ratios_diffs_Albendazole_i1_2_mean',
+                                    'intensity_ratios_diffs_Triamcinolone_acetonide_i1_0_mean', 'intensity_ratios_diffs_Triamcinolone_acetonide_i1_1_mean', 'intensity_ratios_diffs_Triamcinolone_acetonide_i1_2_mean',
+                                    'intensity_ratios_diffs_Perfluorodecanoic_acid_i1_0_mean', 'intensity_ratios_diffs_Perfluorodecanoic_acid_i1_1_mean', 'intensity_ratios_diffs_Perfluorodecanoic_acid_i1_2_mean',
+                                    'intensity_ratios_diffs_Tricosafluorododecanoic_acid_i1_0_mean', 'intensity_ratios_diffs_Tricosafluorododecanoic_acid_i1_1_mean', 'intensity_ratios_diffs_Tricosafluorododecanoic_acid_i1_2_mean',
+                                    'intensity_ratios_diffs_Perfluorotetradecanoic_acid_i1_0_mean', 'intensity_ratios_diffs_Perfluorotetradecanoic_acid_i1_1_mean', 'intensity_ratios_diffs_Perfluorotetradecanoic_acid_i1_2_mean',
+                                    'intensity_ratios_diffs_Pentadecafluoroheptyl_i1_0_mean', 'intensity_ratios_diffs_Pentadecafluoroheptyl_i1_1_mean', 'intensity_ratios_diffs_Pentadecafluoroheptyl_i1_2_mean']
 
 transmission_features_names = ['intensity_Perfluorotetradecanoic_acid_i1_mean', 'intensity_Fluconazole_i1_mean']
 
