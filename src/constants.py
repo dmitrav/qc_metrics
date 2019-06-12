@@ -1,5 +1,5 @@
 
-version = '0.0.3'
+version = '0.0.4'
 
 feature_matrix_file_path = '/Users/andreidm/ETH/projects/ms_feature_extractor/res/test1/feature_matrix.json'
 
@@ -41,10 +41,12 @@ transmission_features_names = ['intensity_Perfluorotetradecanoic_acid_i1_mean', 
 fragmentation_features_names = ['fragments_ratios_Fluconazole_i1_0_mean',
                                 'fragments_ratios_Perfluorotetradecanoic_acid_i1_0_mean']
 
-baseline_features_names = []
-signal_features_names = []
+baseline_150_250_features_names = ['percentiles_chem_150_250_0', 'percentiles_chem_150_250_1']
+baseline_650_750_features_names = ['percentiles_chem_650_750_0', 'percentiles_chem_650_750_1']
 
-s2n_features_names = []
-'3-(Heptadecafluorooctyl)aniline_i1'
-s2b_features_names = []
-'3-(Heptadecafluorooctyl)aniline_i1'
+signal_features_names = [feature_name.replace('absolute_mass_accuracy', 'intensity') for feature_name in accuracy_features_names]
+
+
+s2b_features_names = ['intensity_3-(Heptadecafluorooctyl)aniline_i1_mean', 'percentiles_norm_500_550_0']
+
+s2n_features_names = ['intensity_3-(Heptadecafluorooctyl)aniline_i1_mean', 'percentiles_norm_500_550_0', 'percentiles_norm_500_550_1']
