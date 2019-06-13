@@ -1,6 +1,7 @@
 
 import json
-from src.constants import feature_matrix_file_path as f_matrix
+from src.constants import feature_matrix_file_path as f_matrix_path
+from src.constants import qc_matrix_file_path as qc_matrix_path
 from src.constants import version
 from src.constants import resolution_200_features_names, resolution_700_features_names
 from src.constants import accuracy_features_names, dirt_features_names, isotopic_presence_features_names
@@ -16,11 +17,13 @@ def add_resolution_metrics(qc_values, qc_names, ms_run):
         It's m/z divided by width of the peak at 50% height."""
 
     mz200, width200 = resolution_200_features_names
-    resolution200 = int(ms_run['features_values'][ms_run['features_names'].index(mz200)] / ms_run['features_values'][
+    resolution200 = int(
+        (193.0725512871 + ms_run['features_values'][ms_run['features_names'].index(mz200)]) / ms_run['features_values'][
         ms_run['features_names'].index(width200)])
 
     mz700, width700 = resolution_700_features_names
-    resolution700 = int(ms_run['features_values'][ms_run['features_names'].index(mz700)] / ms_run['features_values'][
+    resolution700 = int(
+        (712.94671694 + ms_run['features_values'][ms_run['features_names'].index(mz700)]) / ms_run['features_values'][
         ms_run['features_names'].index(width700)])
 
     qc_values.extend([resolution200, resolution700])
@@ -165,10 +168,12 @@ def add_signal_to_noise_metrics(qc_values, qc_names, ms_run):
 
 if __name__ == '__main__':
 
-    with open(f_matrix) as general_file:
-        f_matrix = json.load(general_file)
+    with open(f_matrix_path) as input:
+        f_matrix = json.load(input)
 
-    q_matrix = {'qc_runs': []}
+    qc_matrix = {'qc_runs': []}
+
+    print('Start processing...')
 
     for run in f_matrix['ms_runs']:
 
@@ -187,7 +192,7 @@ if __name__ == '__main__':
         add_signal_to_background_metrics(qc_values, qc_names, run)
         add_signal_to_noise_metrics(qc_values, qc_names, run)
 
-        q_matrix['qc_runs'].append({
+        qc_matrix['qc_runs'].append({
             'date': run['date'],
             'original_filename': run['original_filename'],
             'chemical_mix_id': run['chemical_mix_id'],
@@ -198,5 +203,11 @@ if __name__ == '__main__':
             'qc_names': qc_names
         })
 
+        print('File', run['original_filename'], 'has been processed successfully.')
+
+    with open(qc_matrix_path, 'w') as output:
+        json.dump(qc_matrix, output)
+
+    print('Processing is done! Results saved to', qc_matrix_path)
 
 
