@@ -1,5 +1,5 @@
 
-version = '0.0.6'
+version = '0.0.7'
 
 feature_matrix_file_path = '/Users/andreidm/ETH/projects/ms_feature_extractor/res/test2/feature_matrix.json'
 qc_matrix_file_path = feature_matrix_file_path.replace('feature_matrix','qc_matrix')

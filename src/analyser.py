@@ -65,7 +65,7 @@ def plot_and_save(normal_values, spoilt_values, metrics_names, plot_title, path_
         seaborn.violinplot(y=metrics_names[i], x='type', palette='muted', data=combined_df, ax=axes[int(i/4), i%4])\
             .set_title("p = " + str(round(p,3)),fontdict={'fontsize': 10,'fontweight': 'medium'})
 
-    plt.suptitle(plot_title)
+    plt.suptitle(plot_title, fontweight='bold')
 
     if to_show:
         plt.show()
@@ -112,22 +112,28 @@ if __name__ == '__main__':
     dead_volume_metrics_values_2 = get_shifted_distributions(qcm_test2, ['133', '134', '135', '136', '137', '138',
                                                                          '140', '141', '142', '143', '144', '145'])
 
-    plot_and_save(normal_metrics_values, saturation_metrics_values_1, metrics_names, "saturation_1",
+    plot_and_save(normal_metrics_values, saturation_metrics_values_1, metrics_names,
+                  "saturation 1: most ions (incl. HEX) are saturated",
                   '/Users/andreidm/ETH/projects/ms_feature_extractor/res/test2/images/normal_vs_saturation_1.png')
 
-    plot_and_save(normal_metrics_values, saturation_metrics_values_2, metrics_names, "saturation_2",
+    plot_and_save(normal_metrics_values, saturation_metrics_values_2, metrics_names,
+                  "saturation 2: some ions (incl. HEX) are saturated",
                   '/Users/andreidm/ETH/projects/ms_feature_extractor/res/test2/images/normal_vs_saturation_2.png')
 
-    plot_and_save(normal_metrics_values, contamination_metrics_values_1, metrics_names, "new_buffer_1",
+    plot_and_save(normal_metrics_values, contamination_metrics_values_1, metrics_names,
+                  "new buffer mix 1: contamination after switching the syringe needle",
                   '/Users/andreidm/ETH/projects/ms_feature_extractor/res/test2/images/normal_vs_new_buffer_1.png')
 
-    plot_and_save(normal_metrics_values, contamination_metrics_values_2, metrics_names, "new_buffer_2",
+    plot_and_save(normal_metrics_values, contamination_metrics_values_2, metrics_names,
+                  "new buffer mix 2: contamination after switching the syringe needle",
                   '/Users/andreidm/ETH/projects/ms_feature_extractor/res/test2/images/normal_vs_new_buffer_2.png')
 
-    plot_and_save(normal_metrics_values, dead_volume_metrics_values_1, metrics_names, "dead_volume_1",
+    plot_and_save(normal_metrics_values, dead_volume_metrics_values_1, metrics_names,
+                  "dead volume 1: small gap between the injector port and PEEK tubing",
                   '/Users/andreidm/ETH/projects/ms_feature_extractor/res/test2/images/normal_vs_dead_volume_1.png')
 
-    plot_and_save(normal_metrics_values, dead_volume_metrics_values_2, metrics_names, "dead_volume_2",
+    plot_and_save(normal_metrics_values, dead_volume_metrics_values_2, metrics_names,
+                  "dead volume 2: small gap between the PEEK tubing and ESI needle",
                   '/Users/andreidm/ETH/projects/ms_feature_extractor/res/test2/images/normal_vs_dead_volume_2.png')
 
 
