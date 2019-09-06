@@ -1,60 +1,140 @@
-import os, sqlite3
+import os, sqlite3, json
+from src.constants import qc_matrix_file_path, qc_database_path
 
-class qcdb:
-    def __init__(self):
-        self.file = "qcdb.sqlite"
-        self.path = "/mnt/nas2/"
-        self.indicators = ()
 
-    def createDB(self):
-        db = sqlite3.connect(os.path.join(self.path, self.file))
+def create_connection(db_file):
+    """ Creates a database connection to the SQLite database specified by db_file. """
+
+    db = None
+    try:
+        db = sqlite3.connect(db_file)
+        return db
+    except Exception as e:
+        print(e)
+
+    return db
+
+
+def create_table(db, create_table_sql):
+    """ Creates a table from the create_table_sql statement. """
+    try:
         c = db.cursor()
+        c.execute(create_table_sql)
+    except Exception as e:
+        print(e)
 
-        c.execute('''create table samples
-            (   AcqTime text,
-                User text,
-                ContentMD5 text,
-                Comment text,
-                Mix text,
-                Method text,
-                Instrument text,
-                InstrumentModel text,
-                InstrumentSerial text,
-                InstrumentFW text,
-                InstrumentSW text,
-                Prop1 numeric,
-                Prop2 numeric,
-                Prop3 numeric,
-                Prop4 numeric,
-                Prop5 numeric   
-                ) ''')
 
-        c.execute('''create table indicators
-            (ind_id integer primary key,
-                short text,
-                long text
-                ) ''')
+def insert_qc_values(db, qc_values):
+    """ Adds last runs QC values to the table. """
 
-        c.execute("insert into indicators values (1,'Prop1','blah blah')")
-        c.execute("insert into indicators values (2,'Prop2','blah blah')")
-        c.execute("insert into indicators values (3,'Prop3','blah blah')")
-        c.execute("insert into indicators values (4,'Prop4','blah blah')")
-        c.execute("insert into indicators values (5,'Prop5','blah blah')")
+    sql = ''' INSERT INTO qc_values(date,resolution_200,resolution_700,average_accuracy,
+                                    chemical_dirt,instrument_noise,isotopic_presence,transmission,
+                                    fragmentation_305,fragmentation_712,baseline_25_150,baseline_50_150,
+                                    baseline_25_650,baseline_50_650,signal,s2b,
+                                    s2n)
+                          
+                          VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) '''
 
-        db.commit()
-        db.close()
+    cur = db.cursor()
+    cur.execute(sql, qc_values)
+    db.commit()
 
-    def addRecord(self,d):
-        db = sqlite3.connect(os.path.join(self.path, self.file))
-        c = db.cursor()
+    return cur.lastrowid
 
-        keys = (d["AcqTime"][0:19].replace("T", " "), d["User"],d["ContentMD5"], d["Mix"],
-                d["Comment"], d["Method"], d["Instrument"], d["InstrumentModel"], d["InstrumentSerial"],
-                d["InstrumentFW"], d["InstrumentSW"],d["prop1"],d["prop2"],d["prop3"],d["prop4"],d["prop5"])
 
-        c.execute("insert into samples values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", keys)
+def insert_qc_meta(db, qc_meta):
+    """ Adds last runs meta info to the table. """
+
+    sql = ''' INSERT INTO qc_meta(date,original_filename,chemical_mix_id,msfe_version,
+                                  qcm_version,norm_scan_1,norm_scan_2,norm_scan_3,
+                                  chem_scan_1,inst_scan_1)
+                          
+                          VALUES(?,?,?,?,?,?,?,?,?,?) '''
+
+    cur = db.cursor()
+    cur.execute(sql, qc_meta)
+    db.commit()
+
+    return cur.lastrowid
+
+
+def create_qc_database(db_path='/Users/andreidm/ETH/projects/qc_metrics/res/qc_matrix.db'):
+
+    sql_create_qc_meta_table = """ CREATE TABLE IF NOT EXISTS qc_meta (
+                                            date text PRIMARY KEY,
+                                            original_filename text,
+                                            chemical_mix_id integer,
+                                            msfe_version text,
+                                            qcm_version text,
+                                            norm_scan_1 integer,
+                                            norm_scan_2 integer,
+                                            norm_scan_3 integer,
+                                            chem_scan_1 integer,
+                                            inst_scan_1 integer
+                                        ); """
+
+    sql_create_qc_values_table = """ CREATE TABLE IF NOT EXISTS qc_values (
+                                            date text PRIMARY KEY,
+                                            resolution_200 integer,
+                                            resolution_700 integer,
+                                            average_accuracy real,
+                                            chemical_dirt integer,
+                                            instrument_noise integer,
+                                            isotopic_presence real,
+                                            transmission real,
+                                            fragmentation_305 real,
+                                            fragmentation_712 real,
+                                            baseline_25_150 integer,
+                                            baseline_50_150 integer,
+                                            baseline_25_650 integer,
+                                            baseline_50_650 integer,
+                                            signal integer,
+                                            s2b real,
+                                            s2n real 
+                                        ); """
+
+    # create a database connection
+    qc_database = create_connection(qc_database_path)
+
+    # create tables
+    if qc_database is not None:
+        # create projects table
+        create_table(qc_database, sql_create_qc_meta_table)
+        create_table(qc_database, sql_create_qc_values_table)
+    else:
+        print("Error! cannot create the database connection.")
 
 
 if __name__ == '__main__':
     # this is just for debugging
-    pass
+
+    with open(qc_matrix_file_path) as file:
+        qc_matrix = json.load(file)
+
+    create_qc_database(qc_database_path)
+    qc_database = create_connection(qc_database_path)
+
+    for qc_run in qc_matrix['qc_runs']:
+
+        run_meta = (
+            qc_run['date'],
+            qc_run['original_filename'],
+            qc_run['chemical_mix_id'],
+            qc_run['msfe_version'],
+            qc_run['qcm_version'],
+            qc_run['scans_processed']['normal'][0],
+            qc_run['scans_processed']['normal'][1],
+            qc_run['scans_processed']['normal'][2],
+            qc_run['scans_processed']['chemical_noise'][0],
+            qc_run['scans_processed']['instrument_noise'][0]
+        )
+
+        run_values = (
+            qc_run['date'],
+            *qc_run['qc_values']
+        )
+
+        lastrow1 = insert_qc_meta(qc_database, run_meta)
+        lastrow2 = insert_qc_values(qc_database, run_values)
+
+        print("inserted", lastrow1)

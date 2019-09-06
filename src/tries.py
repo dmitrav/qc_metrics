@@ -1,3 +1,7 @@
 
-for i in range(15):
-    print(int(i/4), '+', i%4, '=', int(i/4)*4+i%4)
+
+a = [1,2,3,34]
+
+b = (3, *a)
+
+print(b)

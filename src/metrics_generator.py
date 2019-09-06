@@ -11,7 +11,6 @@ from src.constants import baseline_150_250_features_names, baseline_650_750_feat
 from src.constants import s2b_features_names, s2n_features_names
 
 
-
 def add_resolution_metrics(qc_values, qc_names, ms_run):
     """ This method calculates resolutions metric for two ions (at around 200 m/z and 700 m/z).
         It's m/z divided by width of the peak at 50% height."""
@@ -54,7 +53,7 @@ def add_dirt_metrics(qc_values, qc_names, ms_run):
     for feature in dirt_features_names:
         chem_noise_signal_sum += ms_run['features_values'][ms_run['features_names'].index(feature)]
 
-    qc_values.append(chem_noise_signal_sum)
+    qc_values.append(int(chem_noise_signal_sum))
     qc_names.append('chemical_dirt')
 
 
@@ -67,7 +66,7 @@ def add_noise_metrics(qc_values, qc_names, ms_run):
     for feature in noise_features_names:
         instrument_noise_signal_sum += ms_run['features_values'][ms_run['features_names'].index(feature)]
 
-    qc_values.append(instrument_noise_signal_sum)
+    qc_values.append(int(instrument_noise_signal_sum))
     qc_names.append('instrument_noise')
 
 
@@ -125,7 +124,7 @@ def add_baseline_metrics(qc_values, qc_names, ms_run):
     baseline_25_from_650 = ms_run['features_values'][ms_run['features_names'].index(percentile_25_from_650)]
     baseline_50_from_650 = ms_run['features_values'][ms_run['features_names'].index(percentile_50_from_650)]
 
-    qc_values.extend([baseline_25_from_150, baseline_50_from_150, baseline_25_from_650, baseline_50_from_650])
+    qc_values.extend([int(baseline_25_from_150), int(baseline_50_from_150), int(baseline_25_from_650), int(baseline_50_from_650)])
     qc_names.extend(['baseline_25_150', 'baseline_50_150', 'baseline_25_650', 'baseline_50_650'])
 
 
@@ -138,7 +137,7 @@ def add_signal_metrics(qc_values, qc_names, ms_run):
     for feature in signal_features_names:
         signal_sum += ms_run['features_values'][ms_run['features_names'].index(feature)]
 
-    qc_values.append(signal_sum)
+    qc_values.append(int(signal_sum))
     qc_names.append('signal')
 
 
@@ -166,9 +165,14 @@ def add_signal_to_noise_metrics(qc_values, qc_names, ms_run):
     qc_names.append('s2n')
 
 
-if __name__ == '__main__':
+def create_and_fill_qc_matrix(path=None):
+    """ This method creates a new QC matrix and fills it with the features
+        calculated out of the feature matrix (path). """
 
-    with open(f_matrix_path) as input:
+    if path is None:
+        path = f_matrix_path
+
+    with open(path) as input:
         f_matrix = json.load(input)
 
     qc_matrix = {'qc_runs': []}
@@ -209,5 +213,10 @@ if __name__ == '__main__':
         json.dump(qc_matrix, output)
 
     print('Processing is done! Results saved to', qc_matrix_path)
+
+
+if __name__ == '__main__':
+
+    pass
 
 

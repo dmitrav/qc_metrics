@@ -1,8 +1,10 @@
 
-version = '0.0.8'
+version = '0.0.10'
 
 feature_matrix_file_path = '/Users/andreidm/ETH/projects/ms_feature_extractor/res/test2/feature_matrix.json'
 qc_matrix_file_path = feature_matrix_file_path.replace('feature_matrix','qc_matrix')
+
+qc_database_path = '/Users/andreidm/ETH/projects/qc_metrics/res/qc_matrix.db'
 
 # features names
 resolution_200_features_names = ['absolute_mass_accuracy_Caffeine_i1_mean', 'widths_Caffeine_i1_1_mean']  # 193.0725512871
