@@ -105,11 +105,8 @@ def create_qc_database(db_path='/Users/andreidm/ETH/projects/qc_metrics/res/qc_m
         print("Error! cannot create the database connection.")
 
 
-if __name__ == '__main__':
-    # this is just for debugging
-
-    with open(qc_matrix_file_path) as file:
-        qc_matrix = json.load(file)
+def create_and_fill_qc_database(qc_matrix, debug=False):
+    """ This method creates a new QC database out of a qc_matrix object. """
 
     create_qc_database(qc_database_path)
     qc_database = create_connection(qc_database_path)
@@ -134,7 +131,46 @@ if __name__ == '__main__':
             *qc_run['qc_values']
         )
 
-        lastrow1 = insert_qc_meta(qc_database, run_meta)
-        lastrow2 = insert_qc_values(qc_database, run_values)
+        # inserting values into the new database
+        last_row_number_1 = insert_qc_meta(qc_database, run_meta)
+        last_row_number_2 = insert_qc_values(qc_database, run_values)
 
-        print("inserted", lastrow1)
+        if debug:
+            print("inserted: meta:", last_row_number_1, 'values:', last_row_number_2)
+
+
+def insert_new_qc_run(qc_run, debug=False):
+    """ This method form objects with pre-computed values to insert into the joint database. """
+
+    qc_database = create_connection(qc_database_path)
+
+    run_meta = (
+        qc_run['date'],
+        qc_run['original_filename'],
+        qc_run['chemical_mix_id'],
+        qc_run['msfe_version'],
+        qc_run['qcm_version'],
+        qc_run['scans_processed']['normal'][0],
+        qc_run['scans_processed']['normal'][1],
+        qc_run['scans_processed']['normal'][2],
+        qc_run['scans_processed']['chemical_noise'][0],
+        qc_run['scans_processed']['instrument_noise'][0]
+    )
+
+    run_values = (
+        qc_run['date'],
+        *qc_run['qc_values']
+    )
+
+    # inserting values into the new database
+    last_row_number_1 = insert_qc_meta(qc_database, run_meta)
+    last_row_number_2 = insert_qc_values(qc_database, run_values)
+
+    if debug:
+        print("inserted 1 row at position: meta:", last_row_number_1, 'values:', last_row_number_2)
+
+
+if __name__ == '__main__':
+
+    pass
+

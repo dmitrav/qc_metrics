@@ -1,5 +1,7 @@
 
 import json
+
+from src import db_connector
 from src.constants import feature_matrix_file_path as f_matrix_path
 from src.constants import qc_matrix_file_path as qc_matrix_path
 from src.constants import version
@@ -165,9 +167,9 @@ def add_signal_to_noise_metrics(qc_values, qc_names, ms_run):
     qc_names.append('s2n')
 
 
-def create_and_fill_qc_matrix(path=None):
-    """ This method creates a new QC matrix and fills it with the features
-        calculated out of the feature matrix (path). """
+def calculate_and_save_qc_matrix(path=None, output='sqlite'):
+    """ This method creates a new QC matrix out of the feature matrix and fills it with the QC characteristics
+        calculated out of the feature matrix. """
 
     if path is None:
         path = f_matrix_path
@@ -209,10 +211,54 @@ def create_and_fill_qc_matrix(path=None):
 
         print('File', run['original_filename'], 'has been processed successfully.')
 
-    with open(qc_matrix_path, 'w') as output:
-        json.dump(qc_matrix, output)
+    # two options for dumping
+    if output == 'json':
+        with open(qc_matrix_path, 'w') as output:
+            json.dump(qc_matrix, output)
+
+    elif output == 'sqlite':
+        db_connector.create_and_fill_qc_database(qc_matrix, debug=True)
+
+    else:
+        pass
 
     print('Processing is done! Results saved to', qc_matrix_path)
+
+
+def calculate_and_save_qc_metrics_for_ms_run(ms_run):
+    """ This method computes QC metrics for a new ms_run and calls method to insert them into a database. """
+
+    qc_values = []
+    qc_names = []
+
+    add_resolution_metrics(qc_values, qc_names, ms_run)
+    add_accuracy_metrics(qc_values, qc_names, ms_run)
+    add_dirt_metrics(qc_values, qc_names, ms_run)
+    add_noise_metrics(qc_values, qc_names, ms_run)
+    add_isotopic_abundance_metrics(qc_values, qc_names, ms_run)
+    add_transmission_metrics(qc_values, qc_names, ms_run)
+    add_fragmentation_metrics(qc_values, qc_names, ms_run)
+    add_baseline_metrics(qc_values, qc_names, ms_run)
+    add_signal_metrics(qc_values, qc_names, ms_run)
+    add_signal_to_background_metrics(qc_values, qc_names, ms_run)
+    add_signal_to_noise_metrics(qc_values, qc_names, ms_run)
+
+    new_qc_run = {
+        'date': ms_run['date'],
+        'original_filename': ms_run['original_filename'],
+        'chemical_mix_id': ms_run['chemical_mix_id'],
+        'msfe_version': ms_run['msfe_version'],
+        'scans_processed': ms_run['scans_processed'],
+        'qcm_version': version,
+        'qc_values': qc_values,
+        'qc_names': qc_names
+    }
+
+    print('QC characteristics for ', ms_run['original_filename'], 'has been computed successfully.')
+
+    db_connector.insert_new_qc_run(new_qc_run, debug=True)
+
+    print('QC database is now up-to-date.')
 
 
 if __name__ == '__main__':
